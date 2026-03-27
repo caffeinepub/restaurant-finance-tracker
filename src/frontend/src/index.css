@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* Canvas / Page */
+    --background: 0.87 0.018 225;
+    --foreground: 0.15 0.02 255;
+
+    /* Cards */
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.02 255;
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.02 255;
+
+    /* Primary = Teal #2AA6A7 */
+    --primary: 0.63 0.11 195;
+    --primary-foreground: 1 0 0;
+
+    /* Secondary */
+    --secondary: 0.97 0.01 225;
+    --secondary-foreground: 0.15 0.02 255;
+
+    /* Muted */
+    --muted: 0.94 0.015 225;
+    --muted-foreground: 0.51 0.04 240;
+
+    /* Accent = teal light */
+    --accent: 0.94 0.04 195;
+    --accent-foreground: 0.63 0.11 195;
+
+    /* Destructive */
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 1 0 0;
+
+    /* Borders */
+    --border: 0.88 0.02 225;
+    --input: 0.88 0.02 225;
+    --ring: 0.63 0.11 195;
+
+    /* Charts */
+    --chart-1: 0.63 0.11 195;
+    --chart-2: 0.55 0.14 160;
+    --chart-3: 0.65 0.15 250;
+    --chart-4: 0.75 0.18 85;
+    --chart-5: 0.65 0.22 30;
+
+    /* Sidebar tokens - dark navy */
+    --sidebar: 0.18 0.04 240;
+    --sidebar-foreground: 0.95 0 0;
+    --sidebar-primary: 0.63 0.11 195;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.28 0.065 240;
+    --sidebar-accent-foreground: 1 0 0;
+    --sidebar-border: 0.25 0.05 240;
+    --sidebar-ring: 0.63 0.11 195;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
