@@ -13,6 +13,7 @@ import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { ReportsPage } from "./pages/ReportsPage";
 import { TransactionsPage } from "./pages/TransactionsPage";
 
 // Root route
@@ -83,13 +84,7 @@ const analitikaRoute = createRoute({
 const izvjestajiRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/izvjestaji",
-  component: () => (
-    <PlaceholderPage
-      title="Izvještaji"
-      subtitle="Generiranje i pregled izvještaja"
-      ocid="izvjestaji"
-    />
-  ),
+  component: ReportsPage,
 });
 
 const povijesniPodaciRoute = createRoute({
