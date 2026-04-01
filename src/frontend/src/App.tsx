@@ -9,6 +9,7 @@ import {
 import { useEffect } from "react";
 import { AppLayout } from "./components/AppLayout";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
@@ -76,13 +77,7 @@ const transacijeRoute = createRoute({
 const analitikaRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/analitika",
-  component: () => (
-    <PlaceholderPage
-      title="Analitika"
-      subtitle="Grafovi i trendovi"
-      ocid="analitika"
-    />
-  ),
+  component: AnalyticsPage,
 });
 
 const izvjestajiRoute = createRoute({
