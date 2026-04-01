@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -17,25 +24,34 @@ import { useTransactions } from "../hooks/useQueries";
 type Period = "week" | "month" | "year";
 
 function formatCurrency(amount: number) {
-  return `€ ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `\u20ac ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function isInPeriod(ts: bigint, period: Period): boolean {
+function isInPeriod(ts: bigint, period: Period, year: number): boolean {
   const date = new Date(Number(ts));
   const now = new Date();
+  const currentYear = now.getFullYear();
+
   if (period === "week") {
-    const weekAgo = new Date(now);
-    weekAgo.setDate(now.getDate() - 6);
+    if (year === currentYear) {
+      const weekAgo = new Date(now);
+      weekAgo.setDate(now.getDate() - 6);
+      weekAgo.setHours(0, 0, 0, 0);
+      return date >= weekAgo;
+    }
+    // Last 7 days of the selected year (Dec 25 - Dec 31)
+    const yearEnd = new Date(year, 11, 31, 23, 59, 59, 999);
+    const weekAgo = new Date(yearEnd);
+    weekAgo.setDate(yearEnd.getDate() - 6);
     weekAgo.setHours(0, 0, 0, 0);
-    return date >= weekAgo;
+    return date >= weekAgo && date <= yearEnd;
   }
+
   if (period === "month") {
-    return (
-      date.getFullYear() === now.getFullYear() &&
-      date.getMonth() === now.getMonth()
-    );
+    return date.getFullYear() === year && date.getMonth() === now.getMonth();
   }
-  return date.getFullYear() === now.getFullYear();
+
+  return date.getFullYear() === year;
 }
 
 function downloadFile(content: string, filename: string, mimeType: string) {
@@ -58,10 +74,22 @@ interface CategoryRow {
 export function ReportsPage() {
   const { data: transactions = [], isLoading } = useTransactions();
   const [period, setPeriod] = useState<Period>("month");
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear(),
+  );
+
+  const availableYears = useMemo(() => {
+    const years = new Set(
+      transactions.map((tx) => new Date(Number(tx.date)).getFullYear()),
+    );
+    years.add(new Date().getFullYear());
+    return Array.from(years).sort((a, b) => b - a);
+  }, [transactions]);
 
   const filtered = useMemo(
-    () => transactions.filter((tx) => isInPeriod(tx.date, period)),
-    [transactions, period],
+    () =>
+      transactions.filter((tx) => isInPeriod(tx.date, period, selectedYear)),
+    [transactions, period, selectedYear],
   );
 
   const tableData = useMemo(() => {
@@ -107,19 +135,24 @@ export function ReportsPage() {
     );
     const footer = `"Ukupno",${totals.prihodi.toFixed(2)},${totals.rashodi.toFixed(2)},${totals.saldo.toFixed(2)}`;
     const csv = [header, ...rows, footer].join("\n");
-    downloadFile(csv, "izvjestaj.csv", "text/csv;charset=utf-8;");
+    downloadFile(
+      csv,
+      `izvjestaj-${selectedYear}.csv`,
+      "text/csv;charset=utf-8;",
+    );
   }
 
   function handleExportJSON() {
     const payload = {
       period: periodLabel,
+      year: selectedYear,
       generatedAt: new Date().toISOString(),
       rows: tableData,
       totals,
     };
     downloadFile(
       JSON.stringify(payload, null, 2),
-      "izvjestaj.json",
+      `izvjestaj-${selectedYear}.json`,
       "application/json",
     );
   }
@@ -140,16 +173,36 @@ export function ReportsPage() {
       `}</style>
 
       <div className="space-y-6 animate-fade-in" data-ocid="reports.page">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Izvještaji</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              Izvje\u0161taji
+            </h1>
             <p className="text-muted-foreground mt-1">
               Prihodi i rashodi po kategorijama
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 no-print">
+            <Select
+              value={String(selectedYear)}
+              onValueChange={(v) => setSelectedYear(Number(v))}
+            >
+              <SelectTrigger
+                className="w-[100px] border-border bg-muted/50"
+                data-ocid="reports.year.select"
+              >
+                <SelectValue placeholder="Godina" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableYears.map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <ToggleGroup
               type="single"
               value={period}
@@ -215,7 +268,6 @@ export function ReportsPage() {
           </div>
         </div>
 
-        {/* Table Card */}
         <Card
           className="shadow-card border-border/50 print-area"
           data-ocid="reports.table"
@@ -223,7 +275,8 @@ export function ReportsPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">
-                Pregled po kategorijama · {periodLabel}
+                Pregled po kategorijama \u00b7 {periodLabel} \u00b7{" "}
+                {selectedYear}
               </CardTitle>
               <Download className="h-4 w-4 text-muted-foreground no-print" />
             </div>
@@ -271,10 +324,14 @@ export function ReportsPage() {
                         {row.category}
                       </TableCell>
                       <TableCell className="text-right text-teal">
-                        {row.prihodi > 0 ? formatCurrency(row.prihodi) : "—"}
+                        {row.prihodi > 0
+                          ? formatCurrency(row.prihodi)
+                          : "\u2014"}
                       </TableCell>
                       <TableCell className="text-right text-destructive">
-                        {row.rashodi > 0 ? formatCurrency(row.rashodi) : "—"}
+                        {row.rashodi > 0
+                          ? formatCurrency(row.rashodi)
+                          : "\u2014"}
                       </TableCell>
                       <TableCell
                         className={`text-right font-medium pr-6 ${
@@ -285,8 +342,6 @@ export function ReportsPage() {
                       </TableCell>
                     </TableRow>
                   ))}
-
-                  {/* Footer / totals row */}
                   <TableRow className="border-t-2 border-border/60 bg-muted/40 font-bold">
                     <TableCell className="font-bold text-foreground pl-6">
                       Ukupno
