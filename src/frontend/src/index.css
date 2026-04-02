@@ -50,7 +50,7 @@
     --chart-4: 0.75 0.18 85;
     --chart-5: 0.65 0.22 30;
 
-    /* Sidebar tokens - light sidebar */
+    /* Sidebar tokens - light sidebar (tamniji od pozadine) */
     --sidebar: 0.22 0.05 240;
     --sidebar-foreground: 0.95 0 0;
     --sidebar-primary: 0.63 0.11 195;
@@ -104,14 +104,14 @@
     --chart-4: 0.75 0.18 85;
     --chart-5: 0.65 0.22 30;
 
-    /* Sidebar - još tamnija */
-    --sidebar: 0.1 0.025 240;
+    /* Sidebar - svjetliji od tamne pozadine (invertirani omjer kao u svijetloj temi) */
+    --sidebar: 0.28 0.06 240;
     --sidebar-foreground: 0.95 0 0;
     --sidebar-primary: 0.63 0.11 195;
     --sidebar-primary-foreground: 1 0 0;
-    --sidebar-accent: 0.18 0.04 240;
+    --sidebar-accent: 0.35 0.07 240;
     --sidebar-accent-foreground: 1 0 0;
-    --sidebar-border: 0.2 0.04 240;
+    --sidebar-border: 0.32 0.065 240;
     --sidebar-ring: 0.63 0.11 195;
   }
 
