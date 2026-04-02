@@ -33,8 +33,8 @@ function NavItem({ to, label, icon: Icon, exact, ocid }: NavItemProps) {
         className={cn(
           "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150",
           isActive
-            ? "bg-navy-700 text-white shadow-sm"
-            : "text-white/60 hover:text-white/90 hover:bg-white/5",
+            ? "bg-[oklch(var(--sidebar-accent))] text-[oklch(var(--sidebar-accent-foreground))] shadow-sm"
+            : "text-[oklch(var(--sidebar-foreground)/0.6)] hover:text-[oklch(var(--sidebar-foreground)/0.9)] hover:bg-[oklch(var(--sidebar-accent)/0.5)]",
         )}
       >
         <Icon className="h-[18px] w-[18px] shrink-0" />
@@ -83,19 +83,13 @@ export function AppSidebar() {
   ];
 
   return (
-    <aside
-      className="fixed left-0 top-0 h-screen w-[260px] flex flex-col z-30"
-      style={{
-        background:
-          "linear-gradient(180deg, oklch(0.18 0.04 240) 0%, oklch(0.22 0.06 240) 100%)",
-      }}
-    >
+    <aside className="fixed left-0 top-0 h-screen w-[260px] flex flex-col z-30 bg-[oklch(var(--sidebar))]">
       {/* Brand */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-        <div className="w-9 h-9 rounded-lg bg-teal flex items-center justify-center shrink-0">
-          <Utensils className="h-5 w-5 text-white" />
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-[oklch(var(--sidebar-border))]">
+        <div className="w-9 h-9 rounded-lg bg-[oklch(var(--sidebar-primary))] flex items-center justify-center shrink-0">
+          <Utensils className="h-5 w-5 text-[oklch(var(--sidebar-primary-foreground))]" />
         </div>
-        <span className="text-white font-bold text-[17px] tracking-tight truncate">
+        <span className="text-[oklch(var(--sidebar-foreground))] font-bold text-[17px] tracking-tight truncate">
           {restaurantName || "RestoFinance"}
         </span>
       </div>
@@ -111,9 +105,9 @@ export function AppSidebar() {
       </nav>
 
       {/* Bottom Nav */}
-      <div className="px-3 py-4 border-t border-white/10 space-y-1">
+      <div className="px-3 py-4 border-t border-[oklch(var(--sidebar-border))] space-y-1">
         <Link to="/postavke" data-ocid="nav.settings.link">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white/90 hover:bg-white/5 transition-all duration-150">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[oklch(var(--sidebar-foreground)/0.6)] hover:text-[oklch(var(--sidebar-foreground)/0.9)] hover:bg-[oklch(var(--sidebar-accent)/0.5)] transition-all duration-150">
             <Settings className="h-[18px] w-[18px] shrink-0" />
             <span>{t("nav.settings")}</span>
           </div>
@@ -122,7 +116,7 @@ export function AppSidebar() {
           type="button"
           onClick={clear}
           data-ocid="nav.logout.button"
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white/90 hover:bg-white/5 transition-all duration-150"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[oklch(var(--sidebar-foreground)/0.6)] hover:text-[oklch(var(--sidebar-foreground)/0.9)] hover:bg-[oklch(var(--sidebar-accent)/0.5)] transition-all duration-150"
         >
           <LogOut className="h-[18px] w-[18px] shrink-0" />
           <span>{t("nav.logout")}</span>
