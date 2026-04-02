@@ -11,6 +11,7 @@ import { AppLayout } from "./components/AppLayout";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { HistoricalDataPage } from "./pages/HistoricalDataPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ReportsPage } from "./pages/ReportsPage";
@@ -90,13 +91,7 @@ const izvjestajiRoute = createRoute({
 const povijesniPodaciRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/povijesni-podaci",
-  component: () => (
-    <PlaceholderPage
-      title="Povijesni podaci"
-      subtitle="Arhiva financijskih podataka"
-      ocid="povijesni-podaci"
-    />
-  ),
+  component: HistoricalDataPage,
 });
 
 const postavkeRoute = createRoute({
