@@ -20,18 +20,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useSettings } from "../contexts/SettingsContext";
 import { useTransactions } from "../hooks/useQueries";
-
-const CURRENCY_SYMBOL: Record<string, string> = {
-  EUR: "€",
-  USD: "$",
-  CNY: "¥",
-};
-
-function formatCurrency(amount: number, currency = "EUR") {
-  const symbol = CURRENCY_SYMBOL[currency] ?? currency;
-  return `${symbol} ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 const HR_MONTHS = [
   "Sij",
@@ -63,6 +53,7 @@ const INCOME_COLOR_1 = "oklch(0.63 0.11 195)";
 const INCOME_COLOR_2 = "oklch(0.75 0.18 85)";
 
 export function AnalyticsPage() {
+  const { formatCurrency } = useSettings();
   const { data: transactions = [], isLoading } = useTransactions();
   const currentYear = new Date().getFullYear();
 

@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { Category, Transaction } from "../backend.d";
+import { useSettings } from "../contexts/SettingsContext";
 import { useCategories, useTransactions } from "../hooks/useQueries";
 
 // ─── Constants ────────────────────────────────────────────────────────────
@@ -49,22 +50,11 @@ const PREDEFINED_CATEGORIES: Category[] = [
   { name: "Ostalo", txType: "Rashod" },
 ];
 
-const CURRENCY_SYMBOL: Record<string, string> = {
-  EUR: "€",
-  USD: "$",
-  CNY: "¥",
-};
-
 const PAGE_SIZE = 10;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 function formatDate(ts: bigint) {
   return new Date(Number(ts)).toLocaleDateString("hr-HR");
-}
-
-function formatAmount(amount: number, currency: string) {
-  const symbol = CURRENCY_SYMBOL[currency] ?? currency;
-  return `${symbol} ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function mergeCategories(
@@ -110,6 +100,7 @@ const DEFAULT_FILTERS: Filters = {
 
 // ─── Main Page ─────────────────────────────────────────────────────────────
 export function HistoricalDataPage() {
+  const { formatCurrency } = useSettings();
   const { data: transactions = [], isLoading } = useTransactions();
   const { data: backendCategories = [] } = useCategories();
 
@@ -232,11 +223,7 @@ export function HistoricalDataPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-teal">
-              €{" "}
-              {summary.income.toLocaleString("hr-HR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatCurrency(summary.income)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {
@@ -261,11 +248,7 @@ export function HistoricalDataPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-destructive">
-              €{" "}
-              {summary.expense.toLocaleString("hr-HR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatCurrency(summary.expense)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {
@@ -294,11 +277,7 @@ export function HistoricalDataPage() {
                 summary.net >= 0 ? "text-teal" : "text-destructive"
               }`}
             >
-              €{" "}
-              {summary.net.toLocaleString("hr-HR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatCurrency(summary.net)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {filtered.length} transakcija ukupno
@@ -532,7 +511,7 @@ export function HistoricalDataPage() {
                     {tx.description}
                   </TableCell>
                   <TableCell className="text-sm font-semibold text-right whitespace-nowrap">
-                    {formatAmount(tx.amount, tx.currency)}
+                    {formatCurrency(tx.amount)}
                   </TableCell>
                 </TableRow>
               ))}

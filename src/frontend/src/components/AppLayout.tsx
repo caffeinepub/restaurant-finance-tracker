@@ -1,6 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSettings } from "../contexts/SettingsContext";
 import { useCallerProfile } from "../hooks/useQueries";
 import { AppHeader } from "./AppHeader";
 import { AppSidebar } from "./AppSidebar";
@@ -9,6 +10,11 @@ import { ProfileSetupModal } from "./ProfileSetupModal";
 export function AppLayout() {
   const { data: profile, isLoading: profileLoading } = useCallerProfile();
   const [profileSaved, setProfileSaved] = useState(false);
+  const { theme } = useSettings();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   const needsProfile = !profileLoading && profile === null && !profileSaved;
 

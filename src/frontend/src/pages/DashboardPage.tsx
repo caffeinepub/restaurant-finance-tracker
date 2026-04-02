@@ -15,20 +15,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useSettings } from "../contexts/SettingsContext";
 import { useTransactions } from "../hooks/useQueries";
 
 type Period = "week" | "month" | "year";
-
-const CURRENCY_SYMBOL: Record<string, string> = {
-  EUR: "€",
-  USD: "$",
-  CNY: "¥",
-};
-
-function formatCurrency(amount: number, currency = "EUR") {
-  const symbol = CURRENCY_SYMBOL[currency] ?? currency;
-  return `${symbol} ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 function isInPeriod(ts: bigint, period: Period): boolean {
   const date = new Date(Number(ts));
@@ -77,6 +67,7 @@ const DONUT_COLORS = [
 export function DashboardPage() {
   const { data: transactions = [], isLoading } = useTransactions();
   const [period, setPeriod] = useState<Period>("month");
+  const { formatCurrency } = useSettings();
 
   const filtered = useMemo(
     () => transactions.filter((tx) => isInPeriod(tx.date, period)),

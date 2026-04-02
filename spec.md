@@ -1,32 +1,28 @@
 # Project Resaurant Finance Tracker
 
 ## Current State
-- Stranica `/povijesni-podaci` prikazuje PlaceholderPage
-- Backend nudi `getTransactions()` koji vraća sve transakcije
-- TransactionsPage koristi paginaciju (10/stranici), sortiranje po datumu+ID, kategorije iz backenda+localStorage
-- Postoje preddefinirani tipovi (Prihod, Rashod) i kategorije u PREDEFINED_CATEGORIES konstanti
+
+Aplikacija ima 6 stranica: Dashboard, Transakcije, Analitika, Izvjestaji, Povijesni podaci i Postavke (placeholder). Postavke su trenutno PlaceholderPage bez sadrzaja. Aplikacija nema internacionalizaciju ni podrsku za vise tema.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Nova stranica `HistoricalDataPage.tsx` koja zamjenjuje PlaceholderPage za rutu `/povijesni-podaci`
-- Filteri: raspon datuma (od-do), tip transakcije, kategorija, iznos (min/max), slobodni unos teksta po opisu
-- Paginiran popis svih transakcija (10 po stranici) sortiran najnovije prvo
-- Sažetak: ukupni prihodi, rashodi i saldo za filtrirani skup
+- SettingsContext.tsx -- React context za globalne postavke (jezik, valuta, tema, format datuma, naziv restorana)
+- SettingsPage.tsx -- Stranica Postavke s 5 sekcija
+- translations.ts -- Prijevodi za 6 jezika (HR, EN, DE, IT, ES, ZH)
 
 ### Modify
-- App.tsx: importati i koristiti HistoricalDataPage umjesto PlaceholderPage za `/povijesni-podaci`
+- App.tsx -- SettingsProvider wrapper, zamijeni placeholder s SettingsPage
+- AppLayout.tsx -- primijeni dark/light temu
+- AppSidebar.tsx -- naziv restorana iz postavki, prevedeni labeli
+- Sve stranice -- koristiti useSettings hook za prijevode i formatiranje valuta/datuma
 
 ### Remove
-- Ništa
+- PlaceholderPage referenca za rutu /postavke
 
 ## Implementation Plan
-1. Kreirati `src/frontend/src/pages/HistoricalDataPage.tsx`
-   - Učitati sve transakcije via `useTransactions()` hook
-   - Učitati kategorije via `useCategories()` + PREDEFINED + localStorage tipovi
-   - Filteri: date range (from/to), type select, category select, amount min/max, description search
-   - Filtrirana lista: primijeni sve aktivne filtere na transakcije
-   - Paginacija: 10 po stranici, ista logika kao TransactionsPage
-   - Sažetak kartica: ukupni prihodi, rashodi, neto saldo za filtrirani skup
-   - Gumb za reset filtera
-2. Ažurirati App.tsx da importira i koristi HistoricalDataPage
+
+1. Kreirati SettingsContext.tsx s tipovima i localStorage podrskom
+2. Kreirati translations.ts za sve tekstove na 6 jezika
+3. Kreirati SettingsPage.tsx s 5 sekcija
+4. Spojiti sve komponente s postavkama

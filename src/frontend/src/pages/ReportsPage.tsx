@@ -19,13 +19,10 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Download, FileJson, FileSpreadsheet, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useSettings } from "../contexts/SettingsContext";
 import { useTransactions } from "../hooks/useQueries";
 
 type Period = "week" | "month" | "year";
-
-function formatCurrency(amount: number) {
-  return `\u20ac ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 function isInPeriod(ts: bigint, period: Period, year: number): boolean {
   const date = new Date(Number(ts));
@@ -73,6 +70,7 @@ interface CategoryRow {
 
 export function ReportsPage() {
   const { data: transactions = [], isLoading } = useTransactions();
+  const { formatCurrency } = useSettings();
   const [period, setPeriod] = useState<Period>("month");
   const [selectedYear, setSelectedYear] = useState<number>(
     new Date().getFullYear(),

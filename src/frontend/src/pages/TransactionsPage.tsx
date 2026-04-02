@@ -46,6 +46,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Category, Transaction } from "../backend.d";
+import { useSettings } from "../contexts/SettingsContext";
 import { useActor } from "../hooks/useActor";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
@@ -55,12 +56,6 @@ import {
 } from "../hooks/useQueries";
 
 const CURRENCIES = ["EUR", "USD", "CNY"];
-
-const CURRENCY_SYMBOL: Record<string, string> = {
-  EUR: "€",
-  USD: "$",
-  CNY: "¥",
-};
 
 const PREDEFINED_TYPES = ["Prihod", "Rashod"];
 const PREDEFINED_CATEGORIES: Category[] = [
@@ -76,11 +71,6 @@ const PAGE_SIZE = 10;
 
 function formatDate(ts: bigint) {
   return new Date(Number(ts)).toLocaleDateString("hr-HR");
-}
-
-function formatAmount(amount: number, currency: string) {
-  const symbol = CURRENCY_SYMBOL[currency] ?? currency;
-  return `${symbol} ${amount.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function mergeWithPredefined(
@@ -859,6 +849,7 @@ function ManageCategoriesDialog({
 
 // ─── Main Page ─────────────────────────────────────────────────────────────
 export function TransactionsPage() {
+  const { formatCurrency } = useSettings();
   const { actor } = useActor();
   const qc = useQueryClient();
 
@@ -1122,7 +1113,7 @@ export function TransactionsPage() {
                     {tx.category}
                   </TableCell>
                   <TableCell className="text-sm font-semibold text-right whitespace-nowrap">
-                    {formatAmount(tx.amount, tx.currency)}
+                    {formatCurrency(tx.amount)}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">

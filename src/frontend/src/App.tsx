@@ -8,13 +8,14 @@ import {
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { AppLayout } from "./components/AppLayout";
+import { SettingsProvider } from "./contexts/SettingsContext";
 import { useInternetIdentity } from "./hooks/useInternetIdentity";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { HistoricalDataPage } from "./pages/HistoricalDataPage";
 import { LoginPage } from "./pages/LoginPage";
-import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { TransactionsPage } from "./pages/TransactionsPage";
 
 // Root route
@@ -97,13 +98,7 @@ const povijesniPodaciRoute = createRoute({
 const postavkeRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/postavke",
-  component: () => (
-    <PlaceholderPage
-      title="Postavke"
-      subtitle="Konfiguracija aplikacije"
-      ocid="postavke"
-    />
-  ),
+  component: SettingsPage,
 });
 
 const router = createRouter({
@@ -128,9 +123,9 @@ declare module "@tanstack/react-router" {
 
 export default function App() {
   return (
-    <>
+    <SettingsProvider>
       <RouterProvider router={router} />
       <Toaster richColors position="top-right" />
-    </>
+    </SettingsProvider>
   );
 }

@@ -10,33 +10,22 @@ import {
   Settings,
   Utensils,
 } from "lucide-react";
+import { useSettings } from "../contexts/SettingsContext";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
-
-const mainNavItems = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/transakcije", label: "Transakcije", icon: ArrowLeftRight },
-  { to: "/analitika", label: "Analitika", icon: BarChart2 },
-  { to: "/izvjestaji", label: "Izvje\u0161taji", icon: FileText },
-  { to: "/povijesni-podaci", label: "Povijesni podaci", icon: History },
-];
 
 interface NavItemProps {
   to: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   exact?: boolean;
+  ocid: string;
 }
 
-function NavItem({ to, label, icon: Icon, exact }: NavItemProps) {
+function NavItem({ to, label, icon: Icon, exact, ocid }: NavItemProps) {
   const location = useLocation();
   const isActive = exact
     ? location.pathname === to
     : location.pathname.startsWith(to);
-
-  const ocid = `nav.${label
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")}.link`;
 
   return (
     <Link to={to} data-ocid={ocid}>
@@ -57,6 +46,41 @@ function NavItem({ to, label, icon: Icon, exact }: NavItemProps) {
 
 export function AppSidebar() {
   const { clear } = useInternetIdentity();
+  const { t, restaurantName } = useSettings();
+
+  const mainNavItems = [
+    {
+      to: "/",
+      label: t("nav.dashboard"),
+      icon: LayoutDashboard,
+      exact: true,
+      ocid: "nav.dashboard.link",
+    },
+    {
+      to: "/transakcije",
+      label: t("nav.transactions"),
+      icon: ArrowLeftRight,
+      ocid: "nav.transactions.link",
+    },
+    {
+      to: "/analitika",
+      label: t("nav.analytics"),
+      icon: BarChart2,
+      ocid: "nav.analytics.link",
+    },
+    {
+      to: "/izvjestaji",
+      label: t("nav.reports"),
+      icon: FileText,
+      ocid: "nav.reports.link",
+    },
+    {
+      to: "/povijesni-podaci",
+      label: t("nav.history"),
+      icon: History,
+      ocid: "nav.history.link",
+    },
+  ];
 
   return (
     <aside
@@ -71,8 +95,8 @@ export function AppSidebar() {
         <div className="w-9 h-9 rounded-lg bg-teal flex items-center justify-center shrink-0">
           <Utensils className="h-5 w-5 text-white" />
         </div>
-        <span className="text-white font-bold text-[17px] tracking-tight">
-          RestoFinance
+        <span className="text-white font-bold text-[17px] tracking-tight truncate">
+          {restaurantName || "RestoFinance"}
         </span>
       </div>
 
@@ -88,10 +112,10 @@ export function AppSidebar() {
 
       {/* Bottom Nav */}
       <div className="px-3 py-4 border-t border-white/10 space-y-1">
-        <Link to="/postavke" data-ocid="nav.postavke.link">
+        <Link to="/postavke" data-ocid="nav.settings.link">
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white/90 hover:bg-white/5 transition-all duration-150">
             <Settings className="h-[18px] w-[18px] shrink-0" />
-            <span>Postavke</span>
+            <span>{t("nav.settings")}</span>
           </div>
         </Link>
         <button
@@ -101,7 +125,7 @@ export function AppSidebar() {
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white/90 hover:bg-white/5 transition-all duration-150"
         >
           <LogOut className="h-[18px] w-[18px] shrink-0" />
-          <span>Odjava</span>
+          <span>{t("nav.logout")}</span>
         </button>
       </div>
     </aside>
